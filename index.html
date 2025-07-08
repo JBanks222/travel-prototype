@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,127 +6,146 @@
   <title>Travel Tales - Community</title>
   <style>
     :root {
-      --primary: #008cba;
-      --background: #f2f2f2;
-      --card-bg: #ffffff;
-      --accent: #005f7f;
+      --primary: #ff4500;
+      --secondary: #f6f7f8;
+      --background: #dae0e6;
+      --card-bg: white;
+      --text: #1c1c1c;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: system-ui, sans-serif;
       background: var(--background);
       margin: 0;
-      padding: 0;
+      color: var(--text);
     }
 
     header {
-      background: var(--primary);
-      color: white;
-      padding: 1rem 2rem;
+      background: var(--card-bg);
+      border-bottom: 1px solid #ccc;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 1rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
     header h1 {
+      color: var(--primary);
+      font-size: 1.5rem;
       margin: 0;
-      font-size: 1.8rem;
     }
 
     nav button {
-      margin-left: 0.5rem;
-      padding: 0.6rem 1.2rem;
-      background: white;
-      color: var(--primary);
+      background: var(--primary);
+      color: white;
       border: none;
-      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
       cursor: pointer;
-      font-weight: 600;
+      margin-left: 0.5rem;
     }
 
-    #mainContent {
+    main {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
+      justify-content: center;
+      padding: 2rem 1rem;
     }
 
-    #postForm, #posts {
-      width: 95%;
-      max-width: 700px;
+    #feed {
+      width: 100%;
+      max-width: 640px;
     }
 
     #postForm {
       background: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 10px;
-      margin-bottom: 2rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    #postForm input, #postForm textarea, #postForm button {
+    #postForm input, #postForm textarea, #postForm button, #postForm select {
       width: 100%;
-      margin: 0.5rem 0;
-      padding: 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      margin-top: 0.5rem;
+      padding: 0.6rem;
       font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
     .post {
       background: var(--card-bg);
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border-radius: 10px;
       display: flex;
-      gap: 1rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
 
     .vote-section {
       display: flex;
       flex-direction: column;
       align-items: center;
+      margin-right: 1rem;
       font-size: 1.2rem;
     }
 
     .vote-button {
-      cursor: pointer;
-      border: none;
       background: none;
+      border: none;
+      color: #888;
       font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .vote-button:hover {
       color: var(--primary);
     }
 
-    .comment-section {
-      margin-top: 0.5rem;
-      padding-left: 1rem;
-      border-left: 2px solid #eee;
+    .post-content {
+      flex-grow: 1;
     }
 
-    .community-filter {
-      margin-bottom: 1rem;
+    .post-content h3 {
+      margin: 0 0 0.5rem;
+    }
+
+    .comment-section input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
     }
 
     #toggleMapBtn {
-      margin-top: 1rem;
-      padding: 0.6rem 1rem;
       background: var(--primary);
       color: white;
+      padding: 0.6rem 1rem;
       border: none;
-      border-radius: 6px;
+      border-radius: 20px;
+      margin-top: 1rem;
       cursor: pointer;
     }
 
     #mapSection {
       display: none;
-      width: 95%;
-      max-width: 700px;
-      margin: 2rem auto;
-      padding: 1rem;
-      background: white;
-      border-radius: 10px;
+      margin-top: 2rem;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #map {
+      width: 100%;
+      height: 300px;
     }
   </style>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -141,34 +160,30 @@
     </nav>
   </header>
 
-  <main id="mainContent">
-    <div class="community-filter">
-      <label for="community">Community:</label>
-      <select id="community">
-        <option value="general">General</option>
-        <option value="europe">Europe</option>
-        <option value="asia">Asia</option>
-        <option value="america">America</option>
-        <option value="group-trips">Group Trips</option>
-      </select>
-    </div>
-
-    <section id="postForm">
-      <h2 id="formTitle">Create a Post</h2>
-      <form onsubmit="createPost(event)">
+  <main>
+    <div id="feed">
+      <form id="postForm" onsubmit="createPost(event)">
+        <h2 id="formTitle">Create a Post</h2>
         <input type="text" id="title" placeholder="Post Title" required />
-        <textarea id="content" placeholder="Describe your trip or experience..." required></textarea>
+        <textarea id="content" placeholder="What's happening?" required></textarea>
         <input type="text" id="location" placeholder="Location (optional)" />
         <input type="date" id="tripDate" placeholder="Trip Date (optional)" />
-        <button type="submit">Submit</button>
+        <select id="community">
+          <option value="general">General</option>
+          <option value="europe">Europe</option>
+          <option value="asia">Asia</option>
+          <option value="america">America</option>
+          <option value="group-trips">Group Trips</option>
+        </select>
+        <button type="submit">Post</button>
       </form>
-    </section>
 
-    <section id="posts"></section>
-    <button id="toggleMapBtn" onclick="toggleMap()">Show Map</button>
-    <section id="mapSection">
-      <div id="map" style="height: 300px; width: 100%;"></div>
-    </section>
+      <section id="posts"></section>
+      <button id="toggleMapBtn" onclick="toggleMap()">Show Map</button>
+      <section id="mapSection">
+        <div id="map"></div>
+      </section>
+    </div>
   </main>
 
   <script>
@@ -188,27 +203,27 @@
       const tripDate = document.getElementById("tripDate").value;
       const community = document.getElementById("community").value;
 
-      const postEl = document.createElement("div");
-      postEl.className = "post";
-      postEl.innerHTML = `
+      const post = document.createElement("div");
+      post.className = "post";
+      post.innerHTML = `
         <div class="vote-section">
           <button class="vote-button" onclick="vote(this, 1)">&#x25B2;</button>
           <div class="score">0</div>
           <button class="vote-button" onclick="vote(this, -1)">&#x25BC;</button>
         </div>
-        <div>
-          <strong>${currentRole === 'agent' ? 'Agent' : 'User'} Post in ${community}</strong>
+        <div class="post-content">
+          <small>${currentRole} post in ${community}</small>
           <h3>${title}</h3>
           <p>${content}</p>
           ${location ? `<p><strong>Location:</strong> ${location}</p>` : ''}
-          ${tripDate ? `<p><strong>Trip Date:</strong> ${tripDate}</p>` : ''}
+          ${tripDate ? `<p><strong>Date:</strong> ${tripDate}</p>` : ''}
           <div class="comment-section">
             <input type="text" placeholder="Add a comment..." onkeydown="addComment(event, this)" />
             <div class="comments"></div>
           </div>
         </div>`;
 
-      document.getElementById("posts").prepend(postEl);
+      document.getElementById("posts").prepend(post);
       event.target.reset();
     }
 
@@ -252,6 +267,10 @@
         window.mapInitialized = true;
       }
     }
+  </script>
+</body>
+</html>
+
   </script>
 </body>
 </html>
