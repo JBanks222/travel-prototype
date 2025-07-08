@@ -13,18 +13,13 @@
       --subtext: #787c7e;
       --border: #ccc;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: var(--background);
       color: var(--text);
     }
-
     header {
       background: var(--card-bg);
       border-bottom: 1px solid var(--border);
@@ -36,13 +31,11 @@
       top: 0;
       z-index: 100;
     }
-
     header h1 {
       margin: 0;
       font-size: 1.5rem;
       color: var(--primary);
     }
-
     nav button {
       background-color: var(--primary);
       color: white;
@@ -51,12 +44,10 @@
       border-radius: 20px;
       cursor: pointer;
     }
-
     .container {
       display: flex;
       padding: 2rem;
     }
-
     .sidebar {
       width: 250px;
       padding: 1rem;
@@ -65,24 +56,20 @@
       border-radius: 8px;
       height: fit-content;
     }
-
     .sidebar ul {
       list-style: none;
       padding-left: 0;
     }
-
     .sidebar li {
       padding: 0.5rem 0;
       border-bottom: 1px solid var(--border);
     }
-
     .main-content {
       flex: 1;
       max-width: 700px;
       margin: 0 auto;
       padding: 1rem;
     }
-
     .post {
       display: flex;
       background: var(--card-bg);
@@ -91,14 +78,12 @@
       margin-bottom: 1rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
     .vote-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-right: 1rem;
     }
-
     .vote-section button {
       background: none;
       border: none;
@@ -106,20 +91,16 @@
       color: var(--subtext);
       cursor: pointer;
     }
-
     .vote-count {
       font-weight: bold;
       margin: 0.2rem 0;
     }
-
     .post-content h3 {
       margin: 0 0 0.5rem;
     }
-
     .post small {
       color: var(--subtext);
     }
-
     .comment-section input {
       width: 100%;
       padding: 0.5rem;
@@ -127,32 +108,16 @@
       border: 1px solid var(--border);
       border-radius: 4px;
     }
-
-    #toggleMapBtn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 6px;
-      margin-top: 1rem;
-      cursor: pointer;
-    }
-
     #mapSection {
       display: none;
-      margin-top: 1.5rem;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-top: 1rem;
     }
-
     #map {
       width: 100%;
-      height: 300px;
+      height: 200px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
     }
-
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -163,7 +128,6 @@
       align-items: center;
       z-index: 200;
     }
-
     .modal-content {
       background: white;
       padding: 2rem;
@@ -171,14 +135,7 @@
       width: 90%;
       max-width: 500px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      animation: popup 0.3s ease-out;
     }
-
-    @keyframes popup {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
     .modal-content input,
     .modal-content textarea,
     .modal-content button,
@@ -190,7 +147,6 @@
       border: 1px solid var(--border);
       border-radius: 4px;
     }
-
     .modal-content button {
       background-color: var(--primary);
       color: white;
@@ -220,17 +176,17 @@
         <li>🇺🇸 America</li>
         <li>🧑‍🤝‍🧑 Group Trips</li>
       </ul>
-    </aside>
-    <main class="main-content">
-      <section id="posts"></section>
-      <button id="toggleMapBtn" onclick="toggleMap()">Show Map</button>
+      <button id="toggleMapBtn" onclick="toggleMap()">🗺️ Show Map</button>
       <section id="mapSection">
         <div id="map"></div>
       </section>
+    </aside>
+
+    <main class="main-content">
+      <section id="posts"></section>
     </main>
   </div>
 
-  <!-- Modal -->
   <div class="modal" id="postModal">
     <div class="modal-content">
       <h2 id="formTitle">Create a Post</h2>
@@ -253,20 +209,16 @@
 
   <script>
     let currentRole = 'user';
-
     function openModal(role) {
       currentRole = role;
-      document.getElementById("formTitle").textContent =
-        role === 'agent' ? "Create a Travel Agent Post" : "Create a Post";
+      document.getElementById("formTitle").textContent = role === 'agent' ? "Create a Travel Agent Post" : "Create a Post";
       document.getElementById("postModal").style.display = "flex";
     }
-
     window.onclick = function(event) {
       if (event.target === document.getElementById("postModal")) {
         document.getElementById("postModal").style.display = "none";
       }
     }
-
     function createPost(event) {
       event.preventDefault();
       const title = document.getElementById("title").value;
@@ -274,7 +226,6 @@
       const location = document.getElementById("location").value;
       const tripDate = document.getElementById("tripDate").value;
       const community = document.getElementById("community").value;
-
       const post = document.createElement("div");
       post.className = "post";
       post.innerHTML = `
@@ -294,19 +245,16 @@
             <div class="comments"></div>
           </div>
         </div>`;
-
       document.getElementById("posts").prepend(post);
       document.getElementById("postModal").style.display = "none";
       event.target.reset();
     }
-
     function vote(button, value) {
       const countEl = button.parentElement.querySelector(".vote-count");
       let count = parseInt(countEl.textContent);
       count += value;
       countEl.textContent = count;
     }
-
     function addComment(event, input) {
       if (event.key === "Enter") {
         const commentText = input.value.trim();
@@ -318,7 +266,6 @@
         }
       }
     }
-
     function toggleMap() {
       const section = document.getElementById("mapSection");
       section.style.display = section.style.display === 'none' ? 'block' : 'none';
@@ -343,5 +290,6 @@
   </script>
 </body>
 </html>
+
 
 
