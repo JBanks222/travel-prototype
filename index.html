@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel Tales - Community</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Travel Tales</h1>
+    <nav>
+      <button onclick="showForm('user')">Post as User</button>
+      <button onclick="showForm('agent')">Post as Travel Agent</button>
+    </nav>
+  </header>
+
+  <section id="postForm">
+    <h2 id="formTitle">Create a Post</h2>
+    <form onsubmit="createPost(event)">
+      <input type="text" id="title" placeholder="Post Title" required />
+      <textarea id="content" placeholder="What's on your mind or details about your trip?" required></textarea>
+      <input type="text" id="location" placeholder="Location (optional)" />
+      <input type="date" id="tripDate" placeholder="Trip Date (optional)" />
+      <button type="submit">Submit</button>
+    </form>
+  </section>
+
+  <section id="posts"></section>
+
+  <section id="mapSection">
+    <h2>Popular Travel Destinations</h2>
+    <canvas id="popularityMap" width="400" height="200"></canvas>
+    <div id="locationInfo"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
