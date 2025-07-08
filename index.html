@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,6 +7,79 @@
   <title>Travel Tales - Community</title>
   <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #008cba;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    nav button {
+      margin-left: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: white;
+      color: #008cba;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #postForm {
+      background: white;
+      padding: 1rem;
+      margin: 1rem;
+      border-radius: 8px;
+    }
+
+    #postForm input,
+    #postForm textarea,
+    #postForm button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    #posts {
+      margin: 1rem;
+    }
+
+    .post {
+      background: white;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border-left: 5px solid #008cba;
+    }
+
+    #mapSection {
+      background: white;
+      padding: 1rem;
+      margin: 1rem;
+      border-radius: 8px;
+    }
+
+    #locationInfo {
+      margin-top: 1rem;
+      font-style: italic;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -35,6 +109,58 @@
     <div id="locationInfo"></div>
   </section>
 
-  <script src="script.js"></script>
+  <script>
+    let currentRole = 'user';
+    const postsContainer = document.getElementById("posts");
+
+    function showForm(role) {
+      currentRole = role;
+      document.getElementById("formTitle").textContent =
+        role === 'agent' ? "Create a Travel Agent Post" : "Create a User Post";
+    }
+
+    function createPost(event) {
+      event.preventDefault();
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+      const location = document.getElementById("location").value;
+      const tripDate = document.getElementById("tripDate").value;
+
+      const postEl = document.createElement("div");
+      postEl.className = "post";
+      postEl.innerHTML = `<strong>${currentRole === 'agent' ? 'Agent' : 'User'} Post:</strong>
+        <h3>${title}</h3>
+        <p>${content}</p>
+        ${location ? `<p><strong>Location:</strong> ${location}</p>` : ''}
+        ${tripDate ? `<p><strong>Trip Date:</strong> ${tripDate}</p>` : ''}`;
+
+      postsContainer.prepend(postEl);
+      event.target.reset();
+    }
+
+    const ctx = document.getElementById('popularityMap');
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Bali', 'Paris', 'Tokyo', 'New York', 'Lisbon'],
+        datasets: [{
+          label: 'Popularity Score',
+          data: [90, 80, 75, 65, 50],
+          backgroundColor: '#008cba'
+        }]
+      },
+      options: {
+        onClick: (e, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            const location = chart.data.labels[index];
+            document.getElementById("locationInfo").textContent =
+              `Upcoming trips and info for ${location} will appear here.`;
+          }
+        }
+      }
+    });
+  </script>
 </body>
 </html>
+
