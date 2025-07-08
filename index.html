@@ -1,16 +1,17 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Travel Tales - Community</title>
+  <title>Travel Tales - Reddit Style</title>
   <style>
     :root {
       --primary: #ff4500;
-      --secondary: #f6f7f8;
       --background: #dae0e6;
-      --card-bg: white;
-      --text: #1c1c1c;
+      --card-bg: #ffffff;
+      --text: #1a1a1b;
+      --subtext: #878a8c;
+      --border: #ccc;
     }
 
     * {
@@ -18,22 +19,22 @@
     }
 
     body {
-      font-family: system-ui, sans-serif;
-      background: var(--background);
+      font-family: Arial, sans-serif;
       margin: 0;
+      background-color: var(--background);
       color: var(--text);
     }
 
     header {
-      background: var(--card-bg);
-      border-bottom: 1px solid #ccc;
+      background-color: #ffffff;
+      padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 1000;
+      z-index: 100;
     }
 
     header h1 {
@@ -43,12 +44,11 @@
     }
 
     nav button {
-      background: var(--primary);
+      background-color: var(--primary);
       color: white;
       border: none;
       padding: 0.5rem 1rem;
       border-radius: 20px;
-      font-weight: bold;
       cursor: pointer;
       margin-left: 0.5rem;
     }
@@ -56,38 +56,49 @@
     main {
       display: flex;
       justify-content: center;
-      padding: 2rem 1rem;
+      margin-top: 2rem;
     }
 
     #feed {
       width: 100%;
-      max-width: 640px;
+      max-width: 750px;
     }
 
     #postForm {
-      background: var(--card-bg);
-      padding: 1rem;
+      background-color: var(--card-bg);
       border-radius: 8px;
+      padding: 1rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
-    #postForm input, #postForm textarea, #postForm button, #postForm select {
+    #postForm input,
+    #postForm textarea,
+    #postForm button,
+    #postForm select {
       width: 100%;
       margin-top: 0.5rem;
-      padding: 0.6rem;
+      padding: 0.5rem;
       font-size: 1rem;
-      border: 1px solid #ccc;
+      border: 1px solid var(--border);
       border-radius: 4px;
     }
 
+    #postForm button {
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
     .post {
-      background: var(--card-bg);
       display: flex;
-      padding: 1rem;
+      background-color: var(--card-bg);
       border-radius: 8px;
+      padding: 1rem;
       margin-bottom: 1rem;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     .vote-section {
@@ -95,52 +106,58 @@
       flex-direction: column;
       align-items: center;
       margin-right: 1rem;
-      font-size: 1.2rem;
     }
 
-    .vote-button {
+    .vote-section button {
       background: none;
       border: none;
-      color: #888;
       font-size: 1.5rem;
+      color: var(--subtext);
       cursor: pointer;
     }
 
-    .vote-button:hover {
-      color: var(--primary);
+    .vote-count {
+      font-weight: bold;
+      margin: 0.2rem 0;
     }
 
     .post-content {
-      flex-grow: 1;
+      flex: 1;
     }
 
     .post-content h3 {
-      margin: 0 0 0.5rem;
+      margin-top: 0;
+    }
+
+    .post small {
+      color: var(--subtext);
     }
 
     .comment-section input {
       width: 100%;
       padding: 0.5rem;
       margin-top: 0.5rem;
-      border: 1px solid #ddd;
+      border: 1px solid var(--border);
       border-radius: 4px;
     }
 
     #toggleMapBtn {
+      width: 100%;
       background: var(--primary);
       color: white;
       padding: 0.6rem 1rem;
       border: none;
-      border-radius: 20px;
+      border-radius: 6px;
       margin-top: 1rem;
       cursor: pointer;
     }
 
     #mapSection {
       display: none;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
       border-radius: 8px;
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
 
     #map {
@@ -159,7 +176,6 @@
       <button onclick="showForm('agent')">Agent Post</button>
     </nav>
   </header>
-
   <main>
     <div id="feed">
       <form id="postForm" onsubmit="createPost(event)">
@@ -177,7 +193,6 @@
         </select>
         <button type="submit">Post</button>
       </form>
-
       <section id="posts"></section>
       <button id="toggleMapBtn" onclick="toggleMap()">Show Map</button>
       <section id="mapSection">
@@ -185,14 +200,13 @@
       </section>
     </div>
   </main>
-
   <script>
     let currentRole = 'user';
 
     function showForm(role) {
       currentRole = role;
       document.getElementById("formTitle").textContent =
-        role === 'agent' ? "Create a Travel Agent Post" : "Create a User Post";
+        role === 'agent' ? "Create a Travel Agent Post" : "Create a Post";
     }
 
     function createPost(event) {
@@ -207,9 +221,9 @@
       post.className = "post";
       post.innerHTML = `
         <div class="vote-section">
-          <button class="vote-button" onclick="vote(this, 1)">&#x25B2;</button>
-          <div class="score">0</div>
-          <button class="vote-button" onclick="vote(this, -1)">&#x25BC;</button>
+          <button onclick="vote(this, 1)">⬆️</button>
+          <div class="vote-count">0</div>
+          <button onclick="vote(this, -1)">⬇️</button>
         </div>
         <div class="post-content">
           <small>${currentRole} post in ${community}</small>
@@ -227,11 +241,11 @@
       event.target.reset();
     }
 
-    function vote(button, change) {
-      const scoreEl = button.parentElement.querySelector('.score');
-      let currentScore = parseInt(scoreEl.textContent);
-      currentScore += change;
-      scoreEl.textContent = currentScore;
+    function vote(button, value) {
+      const countEl = button.parentElement.querySelector(".vote-count");
+      let count = parseInt(countEl.textContent);
+      count += value;
+      countEl.textContent = count;
     }
 
     function addComment(event, input) {
@@ -267,10 +281,6 @@
         window.mapInitialized = true;
       }
     }
-  </script>
-</body>
-</html>
-
   </script>
 </body>
 </html>
