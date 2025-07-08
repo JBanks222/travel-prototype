@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Travel Tales - Community</title>
   <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     :root {
       --primary: #008cba;
@@ -52,14 +51,25 @@
       background: #e6e6e6;
     }
 
+    #mainContent {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    #postForm, #posts {
+      width: 100%;
+      max-width: 700px;
+      margin: 0 1rem;
+    }
+
     #postForm {
       background: var(--card-bg);
       padding: 1.5rem;
-      margin: 1.5rem auto;
       border-radius: 10px;
-      width: 95%;
-      max-width: 700px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
     }
 
     #postForm input,
@@ -79,12 +89,6 @@
       resize: vertical;
     }
 
-    #posts {
-      margin: 2rem auto;
-      width: 95%;
-      max-width: 700px;
-    }
-
     .post {
       background: var(--card-bg);
       padding: 1.2rem;
@@ -98,7 +102,20 @@
       margin: 0.2rem 0 0.5rem;
     }
 
+    #toggleMapBtn {
+      display: block;
+      margin: 0 auto 1rem;
+      padding: 0.6rem 1rem;
+      font-weight: bold;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
     #mapSection {
+      display: none;
       background: var(--card-bg);
       padding: 1.5rem;
       margin: 2rem auto;
@@ -114,6 +131,11 @@
       color: #333;
     }
   </style>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
 </head>
 <body>
   <header>
@@ -124,22 +146,27 @@
     </nav>
   </header>
 
-  <section id="postForm">
-    <h2 id="formTitle">Create a Post</h2>
-    <form onsubmit="createPost(event)">
-      <input type="text" id="title" placeholder="Post Title" required />
-      <textarea id="content" placeholder="Share your story or describe the trip..." required></textarea>
-      <input type="text" id="location" placeholder="Location (optional)" />
-      <input type="date" id="tripDate" placeholder="Trip Date (optional)" />
-      <button type="submit">Submit</button>
-    </form>
-  </section>
+  <main id="mainContent">
+    <div>
+      <section id="postForm">
+        <h2 id="formTitle">Create a Post</h2>
+        <form onsubmit="createPost(event)">
+          <input type="text" id="title" placeholder="Post Title" required />
+          <textarea id="content" placeholder="Share your story or describe the trip..." required></textarea>
+          <input type="text" id="location" placeholder="Location (optional)" />
+          <input type="date" id="tripDate" placeholder="Trip Date (optional)" />
+          <button type="submit">Submit</button>
+        </form>
+      </section>
+      <section id="posts"></section>
+    </div>
+  </main>
 
-  <section id="posts"></section>
+  <button id="toggleMapBtn" onclick="toggleMap()">Show Map</button>
 
   <section id="mapSection">
     <h2>Popular Travel Destinations</h2>
-    <canvas id="popularityMap" width="400" height="200"></canvas>
+    <div id="map" style="height: 300px; width: 100%;"></div>
     <div id="locationInfo"></div>
   </section>
 
@@ -172,36 +199,35 @@
       event.target.reset();
     }
 
-    const ctx = document.getElementById('popularityMap');
-    const chart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Bali', 'Paris', 'Tokyo', 'New York', 'Lisbon'],
-        datasets: [{
-          label: 'Popularity Score',
-          data: [90, 80, 75, 65, 50],
-          backgroundColor: '#008cba'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        onClick: (e, elements) => {
-          if (elements.length > 0) {
-            const index = elements[0].index;
-            const location = chart.data.labels[index];
-            document.getElementById("locationInfo").textContent =
-              `Upcoming trips and info for ${location} will appear here.`;
-          }
-        }
+    function toggleMap() {
+      const mapSection = document.getElementById("mapSection");
+      mapSection.style.display = mapSection.style.display === 'none' ? 'block' : 'none';
+      if (!window.mapInitialized) {
+        initMap();
+        window.mapInitialized = true;
       }
-    });
+    }
+
+    function initMap() {
+      const map = L.map('map').setView([20, 0], 2);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const destinations = [
+        { name: 'Bali', coords: [-8.34, 115.09] },
+        { name: 'Paris', coords: [48.85, 2.35] },
+        { name: 'Tokyo', coords: [35.68, 139.76] },
+        { name: 'New York', coords: [40.71, -74.01] },
+        { name: 'Lisbon', coords: [38.72, -9.14] },
+      ];
+
+      destinations.forEach(dest => {
+        L.marker(dest.coords).addTo(map)
+          .bindPopup(`<strong>${dest.name}</strong><br>Upcoming trips and info will appear here.`);
+      });
+    }
   </script>
 </body>
 </html>
-
-
